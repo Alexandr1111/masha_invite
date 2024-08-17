@@ -3,12 +3,17 @@ import { motion } from 'framer-motion';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheck, faTimes } from '@fortawesome/free-solid-svg-icons';
 import './AnimatedInvitation.css'; // Импортируем CSS-файл для стилей
+import audioFile from './assets/applause6.mp3';
 
 const AnimatedInvitation = () => {
-  const message = "Привет, Мария! 🌹 Как насчет того, чтобы сходить в кино на эти выходные?";
+  const message = "Прривет, Мария! 🌹 Приглашаю тебя на квест в следующую субботу! Обещаю, будет запоминающе!";
   const [displayedText, setDisplayedText] = useState('');
   const [showButtons, setShowButtons] = useState(false);
   const [offset, setOffset] = useState({ x: 0, y: 0 }); // Состояние для смещения кнопки
+  const [responseMessage, setResponseMessage] = useState(''); // Сообщение ответа
+
+  // Звуковой эффект
+  const audio = new Audio(audioFile); // Укажите путь к вашему звуковому файлу
 
   useEffect(() => {
     let i = 0;
@@ -19,23 +24,20 @@ const AnimatedInvitation = () => {
         clearInterval(typingEffect);
         setShowButtons(true); // Показываем кнопки после завершения печати
       }
-    }, 100);
+    }, 150);
     return () => clearInterval(typingEffect);
   }, []);
 
-  const sendEmail = (response) => {
-    const email = 'your_email@example.com'; // Замените на ваш реальный адрес электронной почты
-    const subject = 'Ответ на приглашение';
-    const body = response === 'agree' ? 'Я согласна на предложение.' : 'Я отказываюсь.';
-    window.location.href = `mailto:${email}?subject=${subject}&body=${body}`;
-  };
-
   const getRandomOffset = () => {
     const directions = [
-      { x: -50, y: 0 },   // Влево
-      { x: 50, y: 0 },    // Вправо
-      { x: 0, y: -50 },   // Вверх
-      { x: 0, y: 50 }     // Вниз
+      { x: -200, y: 0 },   // Влево
+      { x: 200, y: 0 },    // Вправо
+      { x: 0, y: -200 },   // Вверх
+      { x: 0, y: 200 },    // Вниз
+      { x: -200, y: -200 }, // Вверх-влево
+      { x: 200, y: -200 },  // Вверх-вправо
+      { x: -200, y: 200 },  // Вниз-влево
+      { x: 200, y: 200 }    // Вниз-вправо
     ];
     return directions[Math.floor(Math.random() * directions.length)];
   };
@@ -50,6 +52,11 @@ const AnimatedInvitation = () => {
     setOffset(randomOffset);
   };
 
+  const handleAgreeClick = () => {
+    audio.play(); // Воспроизводим звуковой эффект
+    setResponseMessage('Ура! 🤩 Теперь пошли в тележку обсуждать детали :)'); // Изменяем текст
+  };
+
   return (
       <motion.div
           initial={{ opacity: 0 }}
@@ -58,9 +65,10 @@ const AnimatedInvitation = () => {
           style={{ textAlign: 'center' }} // Центрируем текст
       >
         <h1>{displayedText}</h1>
+        {responseMessage && <h2>{responseMessage}</h2>} {/* Отображаем сообщение ответа */}
         {showButtons && (
             <div className="button-container">
-              <button className="icon-button" onClick={() => sendEmail('agree')}>
+              <button className="icon-button" onClick={handleAgreeClick}>
                 <FontAwesomeIcon icon={faCheck} />
               </button>
               <motion.button
