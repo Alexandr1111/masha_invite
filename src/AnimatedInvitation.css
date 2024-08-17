@@ -1,32 +1,44 @@
+body {
+    background: linear-gradient(135deg, #ffafbd, #ffc3a0);
+    font-family: 'Great Vibes', cursive;
+    color: #333;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+h1 {
+    font-size: 3rem;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
 .button-container {
     display: flex;
     justify-content: center;
-    margin-top: 20px;
+    gap: 20px;
+    position: relative; /* Для правильного позиционирования кнопок */
 }
 
 .icon-button {
-    background: none;
+    background-color: #ff6f61;
     border: none;
+    color: white;
+    padding: 15px 30px;
+    border-radius: 50px;
     cursor: pointer;
-    margin: 0 10px;
-    padding: 10px;
-    transition: transform 0.3s, color 0.3s;
-    font-size: 2em; /* Увеличиваем размер иконки */
+    font-size: 1.2rem;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    transition: background-color 0.3s, transform 0.3s;
 }
 
 .icon-button:hover {
-    transform: scale(1.2); /* Увеличиваем размер при наведении */
+    background-color: #e65c50;
+    transform: translateY(-2px);
 }
 
-.icon-button:focus {
-    outline: none; /* Убираем рамку при фокусе */
-    color: #FFD700; /* Измените цвет при фокусе */
-}
-
-.icon-button:nth-child(1):hover { /* Зелёный цвет для кнопки "Согласиться" */
-    color: #32CD32;
-}
-
-.icon-button:nth-child(2):hover { /* Красный цвет для кнопки "Отказаться" */
-    color: #FF4500;
+.icon-button:active {
+    transform: translateY(2px);
 }

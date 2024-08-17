@@ -8,6 +8,7 @@ const AnimatedInvitation = () => {
   const message = "Привет, Мария! 🌹 Как насчет того, чтобы сходить в кино на эти выходные?";
   const [displayedText, setDisplayedText] = useState('');
   const [showButtons, setShowButtons] = useState(false);
+  const [disagreePosition, setDisagreePosition] = useState({ top: '0%', left: '80%' }); // Устанавливаем левую позицию ближе к 'согласие'
 
   useEffect(() => {
     let i = 0;
@@ -29,11 +30,18 @@ const AnimatedInvitation = () => {
     window.location.href = `mailto:${email}?subject=${subject}&body=${body}`;
   };
 
+  const moveDisagreeButton = () => {
+    const newTop = Math.random() * 80 + '%'; // Генерируем случайное положение по вертикали
+    const newLeft = Math.random() * 80 + '%'; // Генерируем случайное положение по горизонтали
+    setDisagreePosition({ top: newTop, left: newLeft });
+  };
+
   return (
       <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 1 }}
+          style={{ position: 'relative' }} // Устанавливаем относительное позиционирование
       >
         <h1>{displayedText}</h1>
         {showButtons && (
@@ -41,7 +49,16 @@ const AnimatedInvitation = () => {
               <button className="icon-button" onClick={() => sendEmail('agree')}>
                 <FontAwesomeIcon icon={faCheck} />
               </button>
-              <button className="icon-button" onClick={() => sendEmail('disagree')}>
+              <button
+                  className="icon-button"
+                  onClick={() => sendEmail('disagree')}
+                  onMouseEnter={moveDisagreeButton} // Обработчик события для движения кнопки
+                  style={{
+                    position: 'absolute', // Устанавливаем абсолютное позиционирование
+                    top: disagreePosition.top,
+                    left: disagreePosition.left,
+                  }}
+              >
                 <FontAwesomeIcon icon={faTimes} />
               </button>
             </div>
