@@ -8,7 +8,7 @@ const AnimatedInvitation = () => {
   const message = "Привет, Мария! 🌹 Как насчет того, чтобы сходить в кино на эти выходные?";
   const [displayedText, setDisplayedText] = useState('');
   const [showButtons, setShowButtons] = useState(false);
-  const [disagreePosition, setDisagreePosition] = useState({ top: '0%', left: '80%' }); // Устанавливаем левую позицию ближе к 'согласие'
+  const [offset, setOffset] = useState({ x: 0, y: 0 }); // Состояние для смещения кнопки
 
   useEffect(() => {
     let i = 0;
@@ -24,16 +24,30 @@ const AnimatedInvitation = () => {
   }, []);
 
   const sendEmail = (response) => {
-    const email = 'grachev588@gmail.com'; // Замените на ваш реальный адрес электронной почты
+    const email = 'your_email@example.com'; // Замените на ваш реальный адрес электронной почты
     const subject = 'Ответ на приглашение';
     const body = response === 'agree' ? 'Я согласна на предложение.' : 'Я отказываюсь.';
     window.location.href = `mailto:${email}?subject=${subject}&body=${body}`;
   };
 
-  const moveDisagreeButton = () => {
-    const newTop = Math.random() * 80 + '%'; // Генерируем случайное положение по вертикали
-    const newLeft = Math.random() * 80 + '%'; // Генерируем случайное положение по горизонтали
-    setDisagreePosition({ top: newTop, left: newLeft });
+  const getRandomOffset = () => {
+    const directions = [
+      { x: -50, y: 0 },   // Влево
+      { x: 50, y: 0 },    // Вправо
+      { x: 0, y: -50 },   // Вверх
+      { x: 0, y: 50 }     // Вниз
+    ];
+    return directions[Math.floor(Math.random() * directions.length)];
+  };
+
+  const handleTouchStart = () => {
+    const randomOffset = getRandomOffset();
+    setOffset(randomOffset);
+  };
+
+  const handleHover = () => {
+    const randomOffset = getRandomOffset();
+    setOffset(randomOffset);
   };
 
   return (
@@ -41,7 +55,7 @@ const AnimatedInvitation = () => {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 1 }}
-          style={{ position: 'relative' }} // Устанавливаем относительное позиционирование
+          style={{ textAlign: 'center' }} // Центрируем текст
       >
         <h1>{displayedText}</h1>
         {showButtons && (
@@ -49,18 +63,18 @@ const AnimatedInvitation = () => {
               <button className="icon-button" onClick={() => sendEmail('agree')}>
                 <FontAwesomeIcon icon={faCheck} />
               </button>
-              <button
+              <motion.button
                   className="icon-button"
-                  onClick={() => sendEmail('disagree')}
-                  onMouseEnter={moveDisagreeButton} // Обработчик события для движения кнопки
-                  style={{
-                    position: 'absolute', // Устанавливаем абсолютное позиционирование
-                    top: disagreePosition.top,
-                    left: disagreePosition.left,
+                  style={{ transform: `translate(${offset.x}px, ${offset.y}px)` }} // Применяем смещение
+                  onMouseEnter={handleHover} // Убегание кнопки при наведении
+                  onTouchStart={handleTouchStart} // Убегание кнопки при нажатии на мобильных устройствах
+                  onClick={(e) => {
+                    e.preventDefault(); // Прекращаем всплытие события клика
+                    e.stopPropagation(); // Останавливаем клики
                   }}
               >
                 <FontAwesomeIcon icon={faTimes} />
-              </button>
+              </motion.button>
             </div>
         )}
       </motion.div>
